@@ -45,26 +45,24 @@ def create_app(test_config=None):
         })
 
 
-    @app.route('/questions/<int:question_id', method=['DELETE'])
-    def delete_question(question_id):
-        try:
-                question = Question.query.filter(Question.id == question_id).one_or_none{}
+    @app.route('/questions/<int:id>', method=['DELETE'])
+    def delete_question(id):
+        global questions 
 
-                if question is none:
-                        abort(404)
+        i = 0
+        deleted = False
 
-                question.delete()
-                selection = Question.query.order_by(Question.id).all()
-                current_questions = paginate_questions(request, selection)
+        for question in questions:
+                if question['id'] == id:
+                        questions.pop(i)
+                        deleted = True
 
-                return jsonify({
-                        'success': True,
-                        'deleted': question_id,
-                        'questions': current_questions,
-                        'total_questions': lens(Question.query.all())
-                })
-         except:
-           abort(422)
+                i += 1 
+
+        if deleted:
+                return Response("", status=200)
+        else:
+                return jsonify("", status=422)
 
                         
     @app.route('/questions', method=['POST'])
