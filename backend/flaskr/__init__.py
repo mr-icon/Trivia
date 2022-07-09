@@ -17,7 +17,7 @@ def create_app(test_config=None):
     @app.after_request
     def after_request(response):
             response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-            response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,PATCH,POST,DELETE,OPTIONS')
+            response.headers.add('Access-Control-Allow-Methods', 'GET,POST,DELETE,')
             return response
 
     @app.route('/categories', method=['GET'])
@@ -60,9 +60,12 @@ def create_app(test_config=None):
                 i += 1 
 
         if deleted:
-                return Response("", status=200)
-        else:
-                return jsonify("", status=422)
+                return jsonify({
+                        'success': True,
+                        'deleted': question_id,
+                        'questions': current_questions,
+
+                })
 
                         
     @app.route('/questions', method=['POST'])
@@ -89,7 +92,7 @@ def create_app(test_config=None):
                 abort(422) 
 
 
-        @app.route('/questions/<int:question_category', method=['GET'])
+        @app.route('/questions/<str:question_category>', method=['GET'])
         def get_questions(question_category):
                  try:
                         question = Question.query.filter(Question.category == question_category)
@@ -106,7 +109,7 @@ def create_app(test_config=None):
                  except:
                    abort(422)
 
-        @app.route('/questions/<int:question_category', method=['POST'])
+        @app.route('/questions/<str:question_category>', method=['POST'])
         def get_questions(quesstion_category):
                 try:
                         question = Question.query.filter(Question.category == question_category)
