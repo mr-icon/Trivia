@@ -20,7 +20,7 @@ def create_app(test_config=None):
             response.headers.add('Access-Control-Allow-Methods', 'GET,POST,DELETE,')
             return response
 
-    @app.route('/categories', method=['GET'])
+    @app.route('/categories', methods=['GET'])
     def get_categories():
         page = request.args.get('page', 1, type=int)
         categories = Categories.query.all()
@@ -31,7 +31,7 @@ def create_app(test_config=None):
                 'categories': formatted_categories,
         })
    
-    @app.route('/questions', method=['GET'])
+    @app.route('/questions', methods=['GET'])
     def get_questions():
         page = request.args.get('page', 1, type=int)
         start = (page - 1) * 10
@@ -45,7 +45,7 @@ def create_app(test_config=None):
         })
 
 
-    @app.route('/questions/<int:id>', method=['DELETE'])
+    @app.route('/questions/<int:id>', methods=['DELETE'])
     def delete_question(id):
         global questions 
 
@@ -68,7 +68,7 @@ def create_app(test_config=None):
                 })
 
                         
-    @app.route('/questions', method=['POST'])
+    @app.route('/questions', methods=['POST'])
     def create_questions():
         body = request.get_json()
         new_answer = body.get['answer', None]
@@ -92,7 +92,7 @@ def create_app(test_config=None):
                 abort(422) 
 
 
-        @app.route('/questions/<str:question_category>', method=['GET'])
+        @app.route('/questions/<str:question_category>', methods=['GET'])
         def get_questions(question_category):
                  try:
                         question = Question.query.filter(Question.category == question_category)
@@ -109,7 +109,7 @@ def create_app(test_config=None):
                  except:
                    abort(422)
 
-        @app.route('/questions/<str:question_category>', method=['POST'])
+        @app.route('/questions/<str:question_category>', methods=['POST'])
         def get_questions(quesstion_category):
                 try:
                         question = Question.query.filter(Question.category == question_category)
