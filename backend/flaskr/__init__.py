@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -20,28 +20,30 @@ def create_app(test_config=None):
             response.headers.add('Access-Control-Allow-Methods', 'GET,POST,DELETE,')
             return response
 
-    @app.route('/categories', methods=['GET'])
+    @app.route('/', methods=['POST', 'GET'])
     def get_categories():
-        page = request.args.get('page', 1, type=int)
-        categories = Categories.query.all()
-        formatted_categories = [Category.format() for category in categories]
-
+        if request.method == 'GET':
+           page = request.args.get('categories', all, type=str)
+           Catergory = categories.query.all()
         return jsonify({
-                'success':True,
-                'categories': formatted_categories,
+                'success': True,
+                'Category': question_categories,
+                'questions': current_questions,
         })
+
+
    
     @app.route('/questions', methods=['GET'])
-    def get_questions():
+    def get_question():
         page = request.args.get('page', 1, type=int)
         start = (page - 1) * 10
         end = start + 10
-        question = Questions.query.all()
-        formatted_question = [Question.format() for question in questions]
+        question = questions.query.all()
+        formatted_questions = [question.format() for question in questions]
 
         return jsonify({
                 'success':True,
-                'questions': formatted_questions[start:end]
+                'Questions': formatted_question[start:end]
         })
 
 
@@ -69,17 +71,17 @@ def create_app(test_config=None):
 
                         
     @app.route('/questions', methods=['POST'])
-    def create_questions():
+    def create_question():
         body = request.get_json()
         new_answer = body.get['answer', None]
         new_category = body.get['category', None]
         new_difficulty = body.get['difficulty', None]
 
         try:
-                question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+                question = questions(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
                 question.insert()
 
-                selection = Question.query.order.order_by(Question.id).all()
+                selection = questions.query.order.order_by(questions.id).all()
                 current_questions = paginate_questions(request, selection)
 
                 return jsonify({
@@ -93,11 +95,11 @@ def create_app(test_config=None):
 
 
         @app.route('/questions/<str:question_category>', methods=['GET'])
-        def get_questions(question_category):
+        def get_question(questions_category):
                  try:
-                        question = Question.query.filter(Question.category == question_category)
+                        question = questions.query.filter(questions.category == questions_category)
 
-                        question = request.args.get(Question.category, type=str)
+                        question = request.args.get(questions.category, type=str)
                         question = Question.query.all()
                         formatted_questions = [Question.format() for category in questions]
 
@@ -110,15 +112,15 @@ def create_app(test_config=None):
                    abort(422)
 
         @app.route('/questions/<str:question_category>', methods=['POST'])
-        def get_questions(quesstion_category):
+        def get_question(quesstions_category):
                 try:
-                        question = Question.query.filter(Question.category == question_category)
+                        question = questions.query.filter(questions.category == questions_category)
 
-                        question = request.args.get(Question.category, 1, type=str)
-                        start = (question - 1)
+                        question = request.args.get(questions.category, 1, type=str)
+                        start = (questions - 1)
                         end = start + 1
-                        questions = Question.query.order_by(Question.category).all()
-                        formattd_questions = [Question.format() for category in questions]
+                        questions = questions.query.order_by(questions.category).all()
+                        formatted_questions = [questions.format() for category in questions]
 
                         return jsonify({
                                         'success': True,

@@ -71,6 +71,48 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
 
+### Getting Started 
+Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, http://127.0.0.1:5000/, which is set as aproxy in the frontend configuration. 
+Authentication: This version of the application does not require autthentication or API keys.
+
+### Error Handling
+Errors are returned as JSON objects in the following format:
+
+{
+  'success': False,
+  'error': 404,
+  'message': 'Not Found'
+}
+
+{
+  'success': False,
+  'error': 422,
+  'message': 'unprocessable'
+}
+The API will return two error types when request fails:
+404:Resource Not Found
+422:Not processable
+### Endpoints
+
+### GET/category
+General: Returns a list questions of a category, objects, success value.
+
+### GET/questions
+General: Returns a list of questions, objects, success value,
+Results are paginated in groups of 10. include a request argumentnto choose page number, starting from 1.
+
+### DELETE/questions/{question_id}
+General : Delete the question of the given ID if it exists. Returns the id of the question deleted question, success value, total questions and question list based on the current page.
+
+### POST/questions
+General: Creates a new question using the submitted question, answer, category and difficulty. Returns the id of the created question, success value, total questions, and question list based on the current page.
+
+### GET/questions/{question_category}
+General: Returns a list of question under a category, success value, and total questions.
+
+### POST/questions/{question_category}
+General: creates a new question under the given category.  Returns the id of the created question, sucess value, total questions, and question list based on the current page.
+
 ### Documentation Example
 
 `GET '/api/v1.0/categories'`
