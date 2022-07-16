@@ -12,7 +12,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
-    # cors = CORS(app, resources={r"/api/*": {"origins"}})
+    CORS(app)
 
     @app.after_request
     def after_request(response):
@@ -39,7 +39,7 @@ def create_app(test_config=None):
                 current_questions = paginate_questions(request, selection)
 
                 if len(current_questions) == 0:
-                abort(404)
+                        abort(404)
 
                 return jsonify(
                 {
