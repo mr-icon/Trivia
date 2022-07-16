@@ -20,10 +20,10 @@ def create_app(test_config=None):
             response.headers.add('Access-Control-Allow-Methods', 'GET,POST,DELETE,')
             return response
 
-    @app.route('/', methods=['POST', 'GET'])
+    @app.route('/categories', methods=['POST', 'GET'])
     def get_categories():
         if request.method == 'GET':
-           page = request.args.get('categories', all, type=str)
+           page = request.args.get('categories', 1, type=int)
            Catergory = categories.query.all()
         return jsonify({
                 'success': True,
@@ -33,18 +33,21 @@ def create_app(test_config=None):
 
 
    
-    @app.route('/questions', methods=['GET'])
-    def get_question():
-        page = request.args.get('page', 1, type=int)
-        start = (page - 1) * 10
-        end = start + 10
-        question = questions.query.all()
-        formatted_questions = [question.format() for question in questions]
+        @app.route("/questions")
+        def retrieve_questions():
+                selection = Question.query.order_by(Question.id).all()
+                current_questions = paginate_questions(request, selection)
 
-        return jsonify({
-                'success':True,
-                'Questions': formatted_question[start:end]
-        })
+                if len(current_questions) == 0:
+                abort(404)
+
+                return jsonify(
+                {
+                        "success": True,
+                        "questions": current_questions,
+                        "total_question": len(Question.query.all()),
+                }
+                )
 
 
     @app.route('/questions/<int:id>', methods=['DELETE'])
