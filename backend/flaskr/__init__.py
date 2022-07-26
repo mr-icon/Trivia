@@ -24,11 +24,10 @@ def create_app(test_config=None):
     def get_categories():
         if request.method == 'GET':
            page = request.args.get('categories', 1, type=int)
-           Catergory = categories.query.all()
+           categories = Category.query.all()
         return jsonify({
                 'success': True,
-                'Category': question_categories,
-                'questions': current_questions,
+                'categories': Question_category,
         })
 
 
@@ -36,7 +35,7 @@ def create_app(test_config=None):
         @app.route("/questions")
         def retrieve_questions():
                 selection = Question.query.order_by(Question.id).all()
-                current_questions = paginate_questions(request, selection)
+                current_questions = paginate_Question(request, selection)
 
                 if len(current_questions) == 0:
                         abort(404)
@@ -52,14 +51,14 @@ def create_app(test_config=None):
 
     @app.route('/questions/<int:id>', methods=['DELETE'])
     def delete_question(id):
-        global questions 
+        global Question 
 
         i = 0
         deleted = False
 
-        for question in questions:
-                if question['id'] == id:
-                        questions.pop(i)
+        for question in Question:
+                if Question['id'] == id:
+                        Question.pop(i)
                         deleted = True
 
                 i += 1 
@@ -67,7 +66,7 @@ def create_app(test_config=None):
         if deleted:
                 return jsonify({
                         'success': True,
-                        'deleted': question_id,
+                        'deleted': Question_id,
                         'questions': current_questions,
 
                 })
@@ -76,20 +75,21 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
+        new_question = body.get['question', None]
         new_answer = body.get['answer', None]
         new_category = body.get['category', None]
         new_difficulty = body.get['difficulty', None]
 
         try:
-                question = questions(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+                question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
                 question.insert()
 
-                selection = questions.query.order.order_by(questions.id).all()
+                selection = Question.query.order.order_by(Question.id).all()
                 current_questions = paginate_questions(request, selection)
 
                 return jsonify({
                         'success': True,
-                        'create': question_id,
+                        'create': question,
                         'questions': current_questions,
                         'total_questions': lens(Question.query.all())
                 })    
@@ -98,11 +98,11 @@ def create_app(test_config=None):
 
 
         @app.route('/questions/<str:question_category>', methods=['GET'])
-        def get_question(questions_category):
+        def get_question(Question_category):
                  try:
-                        question = questions.query.filter(questions.category == questions_category)
+                        question = Question.query.filter(Question.category == Question_category)
 
-                        question = request.args.get(questions.category, type=str)
+                        question = request.args.get(Question.category, type=str)
                         question = Question.query.all()
                         formatted_questions = [Question.format() for category in questions]
 
@@ -115,15 +115,15 @@ def create_app(test_config=None):
                    abort(422)
 
         @app.route('/questions/<str:question_category>', methods=['POST'])
-        def get_question(quesstions_category):
+        def get_question(Question_category):
                 try:
-                        question = questions.query.filter(questions.category == questions_category)
+                        question = Question.query.filter(Question.category == Question_category)
 
-                        question = request.args.get(questions.category, 1, type=str)
-                        start = (questions - 1)
+                        question = request.args.get(Question.category, 1, type=str)
+                        start = (Question - 1)
                         end = start + 1
-                        questions = questions.query.order_by(questions.category).all()
-                        formatted_questions = [questions.format() for category in questions]
+                        questions = Question.query.order_by(Question.category).all()
+                        formatted_questions = [Question.format() for category in Question]
 
                         return jsonify({
                                         'success': True,
