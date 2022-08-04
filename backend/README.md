@@ -94,24 +94,180 @@ The API will return two error types when request fails:
 422:Not processable
 ### Endpoints
 
-### GET/category
+### `GET '/categories'`
 General: Returns a list questions of a category, objects, success value.
+test: `curl http://127.0.0.1:5000/categories`
+```json
+{
+  "categories":{
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "success": true,
+  "total_category": 6
+}
+```
 
-### GET/questions
+### `GET '/questions'`
 General: Returns a list of questions, objects, success value,
 Results are paginated in groups of 10. include a request argumentnto choose page number, starting from 1.
+test: `curl http://127.0.0.1:5000/questions`
+```json
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "questions": [
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "The Palace of Versailles",
+      "category": 3,
+      "difficulty": 3,
+      "id": 14,
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    }
+  ],
+  "success": true,
+  "total_questions": 22
+}
+```
 
-### DELETE/questions/{question_id}
+### `DELETE '/questions/{question_id}'`
 General : Delete the question of the given ID if it exists. Returns the id of the question deleted question, success value, total questions and question list based on the current page.
+test: `curl -X DELETE http://127.0.0.1:5000/questions/30`
 
-### POST/questions
+```json
+{
+  "deleted": 30,
+  "success": true,
+  "total_questions": 22
+}
+```
+
+### `POST '/questions'`
 General: Creates a new question using the submitted question, answer, category and difficulty. Returns the id of the created question, success value, total questions, and question list based on the current page.
+test: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"first president of Nigeria", "answer":"Dr Nnamdi Azikiwe", "difficulty":"3", "category": "4"}'`
 
-### GET/questions/{question_category}
+```json
+{
+    "created": 32,
+    "questions": [
+        {
+            "answer": "Uruguay",
+            "category": 6,
+            "difficulty": 4,
+            "id": 11,
+            "question": "Which country won the first ever soccer World Cup in 1930?"
+        },
+        {
+            "answer": "George Washington Carver",
+            "category": 4,
+            "difficulty": 2,
+            "id": 12,
+            "question": "Who invented Peanut Butter?"
+        },
+    ],
+    "success": true,
+    "total_questions": 23
+}
+```
+
+#### `POST '/questions'`
+
+General: Sends a post request in order to search for a specific question by search term.
+test: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"searchTerm": "football"}'`
+
+```json
+{
+  "questions": [
+    {
+      "answer": "England",
+      "category": 6,
+      "difficulty": 2,
+      "id": 24,
+      "question": "Which country has the most popular football league"
+    }
+  ],
+  "success": true,
+  "total_questions": 1
+}
+```
+
+
+### `GET '/categories/<int:category_id>/questions'`
 General: Returns a list of question under a category, success value, and total questions.
+test: `curl http://127.0.0.1:5000/categories/1/questions`
 
-### POST/questions/{question_category}
-General: creates a new question under the given category.  Returns the id of the created question, sucess value, total questions, and question list based on the current page.
+```json
+{
+  "questions": [
+    {
+      "answer": "The Liver",
+      "category": 1,
+      "difficulty": 4,
+      "id": 20,
+      "question": "What is the heaviest organ in the human body?"
+    },
+    {
+      "answer": "Alexander Fleming",
+      "category": 1,
+      "difficulty": 3,
+      "id": 21,
+      "question": "Who discovered penicillin?"
+    },
+    {
+      "answer": "Blood",
+      "category": 1,
+      "difficulty": 4,
+      "id": 22,
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ],
+  "success": true,
+  "total_questions": 3
+}
+```
+
+### `POST '/quizzes'`
+General: sends a post request in order to get the next question.
+
+```json
+    {
+      "previous_questions": [1, 4, 12],
+      "quiz_category": {
+        "id": 0,
+        "type": "science"
+      }
+    }
+    ```
+Returns: a single new question object
+
+```json
+  {
+    "question": {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }
+  }
+```
 
 ### Documentation Example
 

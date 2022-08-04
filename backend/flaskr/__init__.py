@@ -123,7 +123,7 @@ def create_app(test_config=None):
 
 
         @app.route('/categories/<int:category_id>/questions', methods=['GET'])
-        def get_question(category_id):
+        def get_category(category_id):
                 categories = Category.query.filter(Category.id == category_id).one_or_none()
 
                 if categories is None:
@@ -180,5 +180,28 @@ def create_app(test_config=None):
                         'message': 'Unprocessable'
                 }), 422
 
+        @app.errorhandler(400)
+        def unprocessable(error):
+                 return jsonify({
+                        'success': False,
+                        'error': 400,
+                        'message': 'Bad request'
+                }), 400
+
+        @app.errorhandler(405)
+        def unprocessable(error):
+                 return jsonify({
+                        'success': False,
+                        'error': 405,
+                        'message': 'Method not allowed'
+                }), 405
+
+        @app.errorhandler(500)
+        def unprocessable(error):
+                 return jsonify({
+                        'success': False,
+                        'error': 500,
+                        'message': 'Internal server error'
+                }), 500
     return app
 
